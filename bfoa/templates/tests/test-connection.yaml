@@ -1,10 +1,11 @@
-
+{{- range .Values.deployments -}}
+{{- range .containers -}}
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ .Values.nameOverride }}-test-connection"
+  name: "{{ .name }}-test-connection"
   labels:
-{{ include "bfoa.labels" . | indent 4 }}
+{{ include "bfoa.labels" $ | indent 4 }}
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -12,5 +13,8 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args:  ['{{ .nameOverride }}:{{ .Values.service.port }}']
+      args: ['{{ .name }}:{{ .service.port }}']
   restartPolicy: Never
+---
+{{ end }}
+{{ end }}

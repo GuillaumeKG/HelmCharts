@@ -1,20 +1,22 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "bfoa.fullname" . -}}
+{{- range .Values.deployments -}}
+{{- range .containers -}}
+{{- $name := .name}}
+{{- if .ingress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
-  namespace: {{ include "bfoa.namespace" . }}
+  name: {{ $name }}
+  namespace: {{ include "bfoa.namespace" $ }}
   labels:
-{{ include "bfoa.labels" . | indent 4 }}
-  {{- with .Values.ingress.annotations }}
+{{ include "bfoa.labels" $ | indent 4 }}
+  {{- with .ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+  {{- end -}}
 spec:
-{{- if .Values.ingress.tls }}
+{{- if .ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
+  {{- range .ingress.tls }}
     - hosts:
       {{- range .hosts }}
         - {{ . | quote }}
@@ -23,15 +25,18 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
+  {{- range .ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
         {{- range .paths }}
           - path: {{ . }}
             backend:
-              serviceName: {{ $fullName }}
+              serviceName: {{ $name }}
               servicePort: http
         {{- end }}
   {{- end }}
+---
+{{ end }}
+{{- end }}
 {{- end }}

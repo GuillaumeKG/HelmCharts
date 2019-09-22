@@ -1,17 +1,23 @@
+{{- range .Values.deployments -}}
+{{- range .containers -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "bfoa.fullname" . }}
-  namespace: {{ include "bfoa.namespace" . }}
+  name: {{ .name }}
+  namespace: {{ include "bfoa.namespace" $ }}
   labels:
-{{ include "bfoa.labels" . | indent 4 }}
+    app.kubernetes.io/name: {{ .name }}
+{{ include "bfoa.labels" $ | indent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .service.port }}
       targetPort: http
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: {{ include "bfoa.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ .name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+---
+{{ end }}
+{{- end }}

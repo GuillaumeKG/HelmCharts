@@ -4,3 +4,13 @@ metadata:
   labels:
     name: {{ include "bfoa.namespace" . }}
   name: {{ include "bfoa.namespace" . }}
+
+---
+# Quotas
+
+---
+# PodTemplate
+
+
+---
+# PodSecurityPolicy

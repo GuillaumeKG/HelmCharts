@@ -12,9 +12,9 @@ metadata:
   {{- with .ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
-  {{- end -}}
+  {{ end }}
 spec:
-{{- if .ingress.tls }}
+{{- if .ingress.tls -}}
   tls:
   {{- range .ingress.tls }}
     - hosts:
@@ -22,10 +22,10 @@ spec:
         - {{ . | quote }}
       {{- end }}
       secretName: {{ .secretName }}
-  {{- end }}
+  {{- end -}}
 {{- end }}
   rules:
-  {{- range .ingress.hosts }}
+  {{ range .ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:

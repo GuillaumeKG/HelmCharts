@@ -1,5 +1,8 @@
 {{- range .Values.deployments -}}
-{{- range .containers -}}
+{{- range $index, $value:=.containers -}}
+{{- if gt $index 0 -}}
+---
+{{- end -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -18,6 +21,6 @@ spec:
   selector:
     app.kubernetes.io/name: {{ .name }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
----
+
 {{ end }}
 {{- end }}

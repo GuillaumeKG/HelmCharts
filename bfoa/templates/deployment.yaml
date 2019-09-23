@@ -1,4 +1,7 @@
-{{- range .Values.deployments -}}
+{{- range $index, $value:=.Values.deployments -}}
+{{- if gt $index 0 -}}
+---
+{{- end -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,24 +29,23 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       containers:
-      {{ range .containers -}}
-        - name: {{ .name }}
-          image: "{{ .image.repository }}:{{ .image.tag }}"
-          imagePullPolicy: {{ .image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .service.port }}
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: {{ .livenessProbe.path }}
-              port: http
-          readinessProbe:
-            httpGet:
-              path: {{ .readynessProbe.path }}
-              port: http
-          resources:
-            {{- toYaml .resources | nindent 12 }}
-      {{- end }}
----
-{{ end }}
+      {{- range .containers }}
+      - name: {{ .name }}
+        image: {{ .image.repository }}:{{ .image.tag }}
+        imagePullPolicy: {{ .image.pullPolicy }}
+        ports:
+          - name: http
+            containerPort: {{ .service.port }}
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: {{ .livenessProbe.path }}
+            port: http
+        readinessProbe:
+          httpGet:
+            path: {{ .readynessProbe.path }}
+            port: http
+        resources:
+          {{- toYaml .resources | nindent 12 }}
+      {{- end -}}
+{{- end -}}

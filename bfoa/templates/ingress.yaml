@@ -33,8 +33,10 @@ spec:
           - path: {{ . }}
             pathType: Prefix
             backend:
-              serviceName: {{ $name }}
-              servicePort: http
+              service:
+                name: {{ $name }}
+                port: 
+                  number: http
         {{- end }}
   {{- end }}
 ---
